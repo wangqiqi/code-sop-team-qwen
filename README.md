@@ -9,7 +9,7 @@
 13 位角色（4 常驻 + 9 按需）由主理人按需调度，9 个能力技能覆盖需求、架构、规划、测试、安全与发版，
 四道硬闸门由一个零依赖 Python CLI 执行——**退出码是唯一判据**。
 
-[![Version](https://img.shields.io/badge/version-2.4.0-2b7fff?style=flat-square)](https://github.com/wangqiqi/code-sop-team-qwen/releases/tag/v2.4.0)
+[![Version](https://img.shields.io/github/v/release/wangqiqi/code-sop-team-qwen?style=flat-square&label=version&color=2b7fff)](https://github.com/wangqiqi/code-sop-team-qwen/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-QwenWork%20Expert%20Kit-black?style=flat-square)](#-安装)
 [![Python](https://img.shields.io/badge/python-3.8%2B-3776ab?style=flat-square&logo=python&logoColor=white)](#-状态与运行要求)
 [![Tests](https://img.shields.io/badge/tests-43%20passing-3fb950?style=flat-square)](code-sop-team/tests/test_sop_gate.py)
@@ -18,7 +18,7 @@
 [![CI](https://github.com/wangqiqi/code-sop-team-qwen/actions/workflows/ci.yml/badge.svg)](https://github.com/wangqiqi/code-sop-team-qwen/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/wangqiqi/code-sop-team-qwen?style=flat-square&label=release)](https://github.com/wangqiqi/code-sop-team-qwen/releases/latest)
 
-**下载**：[`code-sop-team-2.4.0.zip`](https://github.com/wangqiqi/code-sop-team-qwen/releases/download/v2.4.0/code-sop-team-2.4.0.zip)（5.48 MB）
+**下载**：[最新 Release](https://github.com/wangqiqi/code-sop-team-qwen/releases/latest) 里的 `code-sop-team-<version>.zip`
 **安装**：千问办公 → 扩展 → 专家套件 → + 添加 → 上传套件 → 选这个 ZIP
 
 </div>
@@ -103,7 +103,7 @@ flowchart TD
 
 ### 方式 1 · 上传套件（推荐，可启停可更新）
 
-1. 下载 [`code-sop-team-2.4.0.zip`](https://github.com/wangqiqi/code-sop-team-qwen/releases/download/v2.4.0/code-sop-team-2.4.0.zip)（5.48 MB；校验和见 [Release 页](https://github.com/wangqiqi/code-sop-team-qwen/releases/tag/v2.4.0)）
+1. 下载 [最新 Release](https://github.com/wangqiqi/code-sop-team-qwen/releases/latest) 里的 `code-sop-team-<version>.zip`（大小与 SHA-256 见该 Release 的说明末尾）
 2. 客户端左侧 **扩展 → 专家套件 → 右上「+ 添加」→ 上传套件**
 3. 选中 ZIP → **安装**
 4. 新任务里输入 `/`，选中 `sop-team` 等技能即可开工
