@@ -236,6 +236,8 @@ python tools/build_kit.py --out build/dist
 python tools/check_reproducible.py
 ```
 
+打包做了行尾归一（LF）与固定 zip 头（`create_system=3`、固定时间戳/权限），**Windows 与 Linux 上打出的 ZIP 字节完全一致**：想核对 Release 里的包，本地跑一次 `build_kit.py` 比 SHA-256 即可。
+
 ## 📝 版本与移植说明
 
 本仓库是**原始 QwenWork 版**；ZCode 版 [`code-sop-team-zcode`](https://github.com/wangqiqi/code-sop-team-zcode) 自本仓库 2.3.0 移植，两者并列维护、四道闸门语义一致。

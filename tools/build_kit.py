@@ -23,6 +23,8 @@ KIT = "code-sop-team"
 FIXED_DATE = (1980, 1, 1, 0, 0, 0)
 SKIP_DIRS = {"__pycache__", ".git"}
 SKIP_FILES = {".qwenwork-format.json", "Thumbs.db", ".DS_Store"}
+# 按文本归一为 LF，保证 Windows（autocrlf）与 Linux 检出打出的包哈希一致
+TEXT_EXTS = {".md", ".json", ".py", ".ps1", ".sh", ".txt", ".yml", ".yaml", ".gitignore"}
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -62,9 +64,13 @@ def build(kit, out_dir):
         for full, rel in iter_files(kit):
             info = zipfile.ZipInfo(rel, date_time=FIXED_DATE)
             info.compress_type = zipfile.ZIP_DEFLATED
+            info.create_system = 3  # 固定为 Unix，否则 Windows 打包头字节不同，哈希就不同
             info.external_attr = (0o644 & 0xFFFF) << 16
             with open(full, "rb") as src:
-                zf.writestr(info, src.read())
+                payload = src.read()
+            if os.path.splitext(full)[1].lower() in TEXT_EXTS:
+                payload = payload.replace(b"\r\n", b"\n")
+            zf.writestr(info, payload)
 
     with open(zip_path, "rb") as fh:
         blob = fh.read()
