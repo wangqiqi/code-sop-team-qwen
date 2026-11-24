@@ -239,7 +239,14 @@ class GateTest(unittest.TestCase):
             cwd=str(deep), capture_output=True, text=True, encoding="utf-8",
         )
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertIn(str(self.tmp), r.stdout)
+        root_line = [l for l in r.stdout.splitlines() if l.startswith("项目根")][0]
+        reported = root_line.split(":", 1)[1].strip()
+        # CI 的 TEMP 可能是 8.3 短路径（如 C:\Users\RUNNER~1\...），字符串比对会误判；
+        # samefile 用文件系统身份比较，短名/长名/大小写差异都能正确判定。
+        self.assertTrue(
+            os.path.samefile(reported, str(self.tmp)),
+            "报告的根目录 %r 与临时目录 %r 不是同一处\n%s" % (reported, str(self.tmp), r.stdout),
+        )
 
     def test_22_hook_blocks_unapproved_commit(self):
         self.write_plan(PLAN_OK)
