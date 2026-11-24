@@ -24,6 +24,12 @@ FIXED_DATE = (1980, 1, 1, 0, 0, 0)
 SKIP_DIRS = {"__pycache__", ".git"}
 SKIP_FILES = {".qwenwork-format.json", "Thumbs.db", ".DS_Store"}
 
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 
 def iter_files(kit):
     for root, dirs, files in os.walk(kit):

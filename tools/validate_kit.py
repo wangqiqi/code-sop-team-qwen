@@ -42,6 +42,18 @@ KEBAB = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 problems = []
 
 
+def _utf8_stdout():
+    """Windows 控制台默认 cp1252/cp936，直接 print 中文会 UnicodeEncodeError。"""
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
+
+
+_utf8_stdout()
+
+
 def fail(msg):
     problems.append(msg)
     print("FAIL  " + msg)
