@@ -16,7 +16,8 @@
 [![Roles](https://img.shields.io/badge/role%20handbooks-12-8250df?style=flat-square)](#-团队阵容)
 [![Skills](https://img.shields.io/badge/skills-9-f0883e?style=flat-square)](#-技能清单)
 
-**安装**：千问办公 → 扩展 → 专家套件 → + 添加 → 上传套件 → [`dist/code-sop-team-2.4.0.zip`](dist/code-sop-team-2.4.0.zip)
+**下载**：[`code-sop-team-2.4.0.zip`](https://github.com/wangqiqi/code-sop-team-qwen/releases/download/v2.4.0/code-sop-team-2.4.0.zip)（5.48 MB）
+**安装**：千问办公 → 扩展 → 专家套件 → + 添加 → 上传套件 → 选这个 ZIP
 
 </div>
 
@@ -100,7 +101,7 @@ flowchart TD
 
 ### 方式 1 · 上传套件（推荐，可启停可更新）
 
-1. 下载 [`dist/code-sop-team-2.4.0.zip`](dist/code-sop-team-2.4.0.zip)（或从 [Releases](https://github.com/wangqiqi/code-sop-team-qwen/releases) 取）
+1. 下载 [`code-sop-team-2.4.0.zip`](https://github.com/wangqiqi/code-sop-team-qwen/releases/download/v2.4.0/code-sop-team-2.4.0.zip)（5.48 MB；校验和见 [Release 页](https://github.com/wangqiqi/code-sop-team-qwen/releases/tag/v2.4.0)）
 2. 客户端左侧 **扩展 → 专家套件 → 右上「+ 添加」→ 上传套件**
 3. 选中 ZIP → **安装**
 4. 新任务里输入 `/`，选中 `sop-team` 等技能即可开工
