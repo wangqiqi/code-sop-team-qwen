@@ -1,0 +1,134 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 要重新发布的已有 tag（如 v2.4.0）
+        required: true
+      force:
+        description: 覆盖已存在 Release 的产物（v2.4.0 已发布的包不要覆盖）
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: 校验 → 打包 → 发布
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        id: py
+        with:
+          python-version: "3.12"
+
+      - name: 四道闸回归（43 用例）
+        run: python code-sop-team/tests/test_sop_gate.py
+
+      - name: 套件结构校验
+        run: python tools/validate_kit.py
+
+      - name: tag 与清单版本一致性
+        env:
+          REF_NAME: ${{ inputs.tag || github.ref_name }}
+        run: |
+          python - <<'PY'
+          import json, os, sys
+          manifest = json.load(open("code-sop-team/.qwenwork-plugin/plugin.json", encoding="utf-8"))
+          tag = os.environ["REF_NAME"]
+          version = manifest["version"]
+          print("tag=%s manifest_version=%s" % (tag, version))
+          if tag != "v" + version:
+              print("::error::tag %s 与清单 version %s 不一致，先改清单再打 tag" % (tag, version))
+              sys.exit(1)
+          PY
+
+      - name: 打包（可复现）
+        id: build
+        run: python tools/build_kit.py --out build/dist
+
+      - name: 产物自检
+        run: |
+          python - <<'PY'
+          import glob, json, sys, zipfile
+          path = glob.glob("build/dist/*.zip")[0]
+          zf = zipfile.ZipFile(path)
+          assert zf.testzip() is None, "zip 损坏"
+          names = zf.namelist()
+          manifest = json.loads(zf.read(".qwenwork-plugin/plugin.json"))
+          root = json.loads(zf.read("plugin.json"))
+          assert manifest == root, "两份清单不一致"
+          assert manifest["name"] == "code-sop-team", manifest["name"]
+          assert "icon.png" in names, "缺少 icon.png"
+          for s in manifest["skills"]:
+              assert s.replace("./", "").rstrip("/") + "/SKILL.md" in names, s
+          print("OK  %s | %d 条目 | %s v%s" % (path, len(names), manifest["name"], manifest["version"]))
+          PY
+
+      - name: 生成发布说明
+        env:
+          REF_NAME: ${{ inputs.tag || github.ref_name }}
+        run: |
+          NOTES="release-notes/${REF_NAME}.md"
+          OUT="build/release-body.md"
+          if [ -f "$NOTES" ]; then
+            cp "$NOTES" "$OUT"
+          else
+            echo "自动发布 ${REF_NAME}。" > "$OUT"
+          fi
+          {
+            echo ""
+            echo "## 构建产物校验（CI 自动生成）"
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| 文件 | \`${{ steps.build.outputs.name }}\` |"
+            echo "| 大小 | ${{ steps.build.outputs.size }} 字节 |"
+            echo "| SHA-256 | \`${{ steps.build.outputs.sha256 }}\` |"
+            echo "| 条目数 | 见上一步日志 |"
+            echo "| 构建 | commit \`${{ github.sha }}\` · Python ${{ steps.py.outputs.python-version }} |"
+            echo ""
+            echo "Windows 校验：\`Get-FileHash ${{ steps.build.outputs.name }} -Algorithm SHA256\`"
+          } >> "$OUT"
+          cat "$OUT"
+
+      - name: 发布 / 更新 Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ inputs.tag || github.ref_name }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          if gh release view "$REF_NAME" >/dev/null 2>&1; then
+            if [ "$FORCE" = "true" ]; then
+              gh release upload "$REF_NAME" build/dist/*.zip --clobber
+              gh release edit "$REF_NAME" --notes-file build/release-body.md
+              echo "已覆盖 Release $REF_NAME 的产物与说明"
+            else
+              echo "Release $REF_NAME 已存在，未覆盖产物（需要覆盖请手动触发并勾选 force）"
+            fi
+          else
+            gh release create "$REF_NAME" build/dist/*.zip \
+              --title "${REF_NAME} · 代码工程 SOP 专家团（QwenWork 版）" \
+              --notes-file build/release-body.md \
+              --verify-tag
+            echo "已创建 Release $REF_NAME"
+          fi
+
+      - name: 保留产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-zip
+          path: build/dist/*.zip
+          if-no-files-found: error

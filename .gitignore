@@ -12,3 +12,6 @@ Thumbs.db
 # Python
 __pycache__/
 *.pyc
+
+# CI 打包输出（产物走 Release，不进仓库）
+build/

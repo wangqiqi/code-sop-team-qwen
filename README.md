@@ -15,6 +15,8 @@
 [![Tests](https://img.shields.io/badge/tests-43%20passing-3fb950?style=flat-square)](code-sop-team/tests/test_sop_gate.py)
 [![Roles](https://img.shields.io/badge/role%20handbooks-12-8250df?style=flat-square)](#-团队阵容)
 [![Skills](https://img.shields.io/badge/skills-9-f0883e?style=flat-square)](#-技能清单)
+[![CI](https://github.com/wangqiqi/code-sop-team-qwen/actions/workflows/ci.yml/badge.svg)](https://github.com/wangqiqi/code-sop-team-qwen/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/wangqiqi/code-sop-team-qwen?style=flat-square&label=release)](https://github.com/wangqiqi/code-sop-team-qwen/releases/latest)
 
 **下载**：[`code-sop-team-2.4.0.zip`](https://github.com/wangqiqi/code-sop-team-qwen/releases/download/v2.4.0/code-sop-team-2.4.0.zip)（5.48 MB）
 **安装**：千问办公 → 扩展 → 专家套件 → + 添加 → 上传套件 → 选这个 ZIP
@@ -206,6 +208,33 @@ QwenWork 安装包不自带 Python 解释器，开工前先自检，避免在缺
 | 交付归档 | 本地文件 | 发布成钉钉文档 / Notion 页面 |
 
 > 所有技能在没有连接器时均可正常使用。配置方式见 [CONNECTORS.md](code-sop-team/CONNECTORS.md)。
+
+## 🔄 自动校验与发布（GitHub Actions）
+
+| 工作流 | 触发 | 做什么 |
+|---|---|---|
+| [`ci.yml`](.github/workflows/ci.yml) | push 到 `main`、PR、手动 | Ubuntu 22.04/py3.8 · Ubuntu/py3.12 · Windows/py3.12 三腿并行：跑 43 个闸门用例 → 套件结构校验 → 打包 → **再打一次比对 SHA-256**（产物必须可复现） |
+| [`release.yml`](.github/workflows/release.yml) | 推 `v*` tag，或手动指定 tag | 校验通过后：tag 与 `plugin.json` 的 `version` 必须一致 → 可复现打包 → 校验 ZIP 内部结构（两份清单、`name`、`icon.png`、每个 `SKILL.md`）→ **自动建 Release 并附 ZIP**，说明末尾自动追加文件名/大小/SHA-256 |
+
+发布只走 tag，避免每推一次 `main` 就涨一个版本号。要发新版：
+
+```bash
+# 1. 改 code-sop-team/.qwenwork-plugin/plugin.json 的 version（根级 plugin.json 同步改）
+# 2. 写 release-notes/v2.4.1.md（可选，不写就自动生成）
+# 3. 打 tag 并推
+git tag v2.4.1 && git push origin v2.4.1
+```
+
+已存在的 Release 默认**不覆盖产物**（防止已发布的包被换掉）；确需重发走手动触发并勾选 `force`。
+
+本地等价命令：
+
+```bash
+python code-sop-team/tests/test_sop_gate.py
+python tools/validate_kit.py
+python tools/build_kit.py --out build/dist
+python tools/check_reproducible.py
+```
 
 ## 📝 版本与移植说明
 
