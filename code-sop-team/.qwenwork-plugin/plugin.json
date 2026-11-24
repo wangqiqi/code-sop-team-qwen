@@ -1,0 +1,33 @@
+{
+  "name": "code-sop-team",
+  "displayName": "Code Engineering SOP Team",
+  "displayNameEn": "Code Engineering SOP Team",
+  "displayNameCn": "代码工程 SOP 专家团",
+  "version": "2.4.0",
+  "description": "A 13-role engineering team that turns ad-hoc coding into a planned, verifiable, autonomous workflow: requirement framing, architecture, sprint planning, execution under four hard gates, code review, QA, security review and release.",
+  "descriptionEn": "A 13-role engineering team that turns ad-hoc coding into a planned, verifiable, autonomous workflow: requirement framing, architecture, sprint planning, execution under four hard gates, code review, QA, security review and release.",
+  "descriptionZh": "13 人工程团队：需求澄清、架构设计、任务规划、四道硬闸、测试安全走查与发版，按需请人。",
+  "author": {
+    "name": "wangqiqi",
+    "url": "https://github.com/wangqiqi"
+  },
+  "category": "engineering",
+  "tags": [
+    "engineering-workflow",
+    "sprint-planning",
+    "code-review",
+    "quality-gates",
+    "release"
+  ],
+  "skills": [
+    "skills/sop-team",
+    "skills/sop-gate",
+    "skills/product-spec",
+    "skills/architecture-design",
+    "skills/ux-design",
+    "skills/stack-conventions",
+    "skills/quality-checklists",
+    "skills/delivery-contracts",
+    "skills/release-ops"
+  ]
+}

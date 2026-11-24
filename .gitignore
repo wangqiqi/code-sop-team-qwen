@@ -1,0 +1,14 @@
+# 运行时状态与实测产物（SOP 流程产生的，不进仓库）
+.qwenwork/
+sop/
+
+# 系统临时文件
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*~
+
+# Python
+__pycache__/
+*.pyc
